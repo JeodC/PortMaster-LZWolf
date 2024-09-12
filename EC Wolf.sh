@@ -18,7 +18,7 @@ source $controlfolder/device_info.txt
 get_controls
 
 # Variables
-GAMEDIR=/$directory/ports/ecwolf
+GAMEDIR="/$directory/ports/ecwolf"
 HEIGHT=$DISPLAY_HEIGHT
 WIDTH=$DISPLAY_WIDTH
 DATA="Wolfenstein 3D.ecwolf" # Returned from Love2D launcher
@@ -60,7 +60,7 @@ sed -i "s/^FullScreenHeight = [0-9]\+/FullScreenHeight = $HEIGHT/" "$CONFIG"
 sed -i "s/^FullScreenWidth = [0-9]\+/FullScreenWidth = $WIDTH/" "$CONFIG"
 
 # Build args
-ARGS="--config $CONFIG --savedir $GAMEDIR/cfg"
+ARGS="--config $CONFIG --savedir ./cfg"
 if [ -n "$DATA" ]; then
     dos2unix "$DATA"
     TMP=$IFS
@@ -80,6 +80,7 @@ else
 fi
 
 # Run game
+echo "Running ecwolf with args: ${ARGS}"
 $GPTOKEYB "ecwolf" &
 ./ecwolf $ARGS
 
