@@ -11,3 +11,20 @@ This port comes with the shareware and demo for Wolfenstein 3D and Spear of Dest
  ## Play
 
  A Love2D launcher is planned, avoiding multiple `.sh` files. ECWolf does support mods, instructions for mods are pending however.
+
+ ## Mod
+
+ The launcher looks for `.ecwolf` files and uses their information to construct arguments passed to ecwolf. To create a `.ecwolf` file, open a text editor and add the following:
+
+ - `PATH` - Path to the data files
+ - `DATA` - File extension of the data files
+ - `PK3_#` - Any `.pk3` files to load after the data, can use up to four
+
+Follow this example `Wolfenstein 3D.ecwolf` which launches vanilla Wolfenstein 3D:
+
+```
+PATH=./wolf3d
+DATA=WL6
+PK3_1=breathing_fix.pk3
+-- end --
+```
