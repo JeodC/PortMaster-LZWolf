@@ -19,7 +19,9 @@ get_controls
 
 # Variables
 GAMEDIR=/$directory/ports/ecwolf
-DATA=$1${1#*.}
+HEIGHT=$DISPLAY_HEIGHT
+WIDTH=$DISPLAY_WIDTH
+DATA=$1${1#*.} # Returned from Love2D launcher
 
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
@@ -41,17 +43,26 @@ export SDL_GAMECONTROLLERCONFIG_FILE="$sdl_controllerconfig"
 
 # Select a config file
 if [ "${ANALOG_STICKS}" == 0 ]; then
-	CONFIG="./cfg/nosticks.cfg"
+    CONFIG="./cfg/nosticks.cfg"
 else
-	CONFIG="./cfg/ecwolf.cfg" 
+    CONFIG="./cfg/ecwolf.cfg" 
 fi
 
 # Modify the config file
+if [ $WIDTH -eq $HEIGHT ]; then # RGB30 or 1:1
+    WIDTH=540
+if [ $WIDTH -gt 1080 ]; then # RG552
+    WIDTH=1080
+fi
 
-# Mod Parsing
-ARGS="--config $CONFIG--savedir $GAMEDIR/cfg"
+sed -i "s/^FullScreenHeight = [0-9]\+/FullScreenHeight = $HEIGHT/" "$CONFIG"
+sed -i "s/^FullScreenWidth = [0-9]\+/FullScreenWidth = $WIDTH/" "$CONFIG"
+
+# Build args
+ARGS="--config $CONFIG --savedir $GAMEDIR/cfg"
 if [ "${DATA}" == "ecwolf" ]; then
     dos2unix "${1}"
+    TMP=$IFS
     while IFS== read -r key value; do
         case "$key" in
             DATA)
@@ -62,13 +73,14 @@ if [ "${DATA}" == "ecwolf" ]; then
                 ;;
         esac
     done < "${1}"
+    IFS=$TMP
 else
     ARGS+=" --data ${DATA}"
 fi
 
 # Run game
 $GPTOKEYB "ecwolf" &
-./ecwolf --config "./cfg/ecwolf.cfg" --data WL6 ./breathing_fix.pk3
+./ecwolf $ARGS
 
 $ESUDO kill -9 $(pidof gptokeyb)
 $ESUDO systemctl restart oga_events &
