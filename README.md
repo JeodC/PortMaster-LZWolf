@@ -2,7 +2,7 @@
 
 ## Installation
 
-This port comes with the shareware and demo for Wolfenstein 3D and Spear of Destiny. ECWolf is v.1.4.1 which is current as olf 09/12/2024. ECWolf can run the following games:
+This port comes with the shareware and demo for Wolfenstein 3D and Spear of Destiny. ECWolf is v.1.4.1 which is current as of 09/12/2024. ECWolf can run the following games:
 
 - [Wolfenstein 3D / Spear of Destiny](https://www.gog.com/en/game/wolfenstein_3d) - Place all `.WL6` files in the `ecwolf/wl6` folder and all `.SOD` files in the `ecwolf/sod` folder.
 - [Spear of Destiny Mission Packs]() - Place all `.SD2` and `.SD3` files in the `ecwolf/sod` folder.
@@ -10,4 +10,4 @@ This port comes with the shareware and demo for Wolfenstein 3D and Spear of Dest
 
  ## Play
 
- A Love2D launcher is planned as a launcher, avoiding multiple `.sh` files. ECWolf does support mods, instructions for mods are pending however.
+ A Love2D launcher is planned, avoiding multiple `.sh` files. ECWolf does support mods, instructions for mods are pending however.
