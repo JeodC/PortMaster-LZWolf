@@ -21,7 +21,7 @@ get_controls
 GAMEDIR=/$directory/ports/ecwolf
 HEIGHT=$DISPLAY_HEIGHT
 WIDTH=$DISPLAY_WIDTH
-DATA=$1${1#*.} # Returned from Love2D launcher
+DATA="Wolfenstein 3D.ecwolf" # Returned from Love2D launcher
 
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
@@ -51,6 +51,7 @@ fi
 # Modify the config file
 if [ $WIDTH -eq $HEIGHT ]; then # RGB30 or 1:1
     WIDTH=540
+fi
 if [ $WIDTH -gt 1080 ]; then # RG552
     WIDTH=1080
 fi
@@ -60,8 +61,8 @@ sed -i "s/^FullScreenWidth = [0-9]\+/FullScreenWidth = $WIDTH/" "$CONFIG"
 
 # Build args
 ARGS="--config $CONFIG --savedir $GAMEDIR/cfg"
-if [ "${DATA}" == "ecwolf" ]; then
-    dos2unix "${1}"
+if [ -n "$DATA" ]; then
+    dos2unix "$DATA"
     TMP=$IFS
     while IFS== read -r key value; do
         case "$key" in
@@ -72,7 +73,7 @@ if [ "${DATA}" == "ecwolf" ]; then
                 ARGS+=" --file $value"
                 ;;
         esac
-    done < "${1}"
+    done < "$DATA"
     IFS=$TMP
 else
     ARGS+=" --data ${DATA}"
