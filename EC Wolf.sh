@@ -50,7 +50,7 @@ fi
 
 # Modify the config file
 if [ $WIDTH -eq $HEIGHT ]; then # RGB30 or 1:1
-    WIDTH=540
+    HEIGHT=540
 fi
 if [ $HEIGHT -gt 1080 ]; then # RG552
     HEIGHT=1080
