@@ -52,8 +52,8 @@ fi
 if [ $WIDTH -eq $HEIGHT ]; then # RGB30 or 1:1
     WIDTH=540
 fi
-if [ $WIDTH -gt 1080 ]; then # RG552
-    WIDTH=1080
+if [ $HEIGHT -gt 1080 ]; then # RG552
+    HEIGHT=1080
 fi
 
 sed -i "s/^FullScreenHeight = [0-9]\+/FullScreenHeight = $HEIGHT/" "$CONFIG"
@@ -82,7 +82,7 @@ fi
 # Run game
 echo "Running ecwolf with args: ${ARGS}"
 $GPTOKEYB "ecwolf" &
-./ecwolf $ARGS
+./lzwolf $ARGS
 
 $ESUDO kill -9 $(pidof gptokeyb)
 $ESUDO systemctl restart oga_events &
