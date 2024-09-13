@@ -82,7 +82,7 @@ fi
 # Run game
 echo "Running ecwolf with args: ${ARGS}"
 $GPTOKEYB "ecwolf" &
-./lzwolf $ARGS
+./ecwolf $ARGS
 
 $ESUDO kill -9 $(pidof gptokeyb)
 $ESUDO systemctl restart oga_events &
