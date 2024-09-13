@@ -1,0 +1,3 @@
+PATH=./Spear_of_Destiny
+DATA=SOD
+-- end --
