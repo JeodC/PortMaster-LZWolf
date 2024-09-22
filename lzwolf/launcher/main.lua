@@ -191,6 +191,8 @@ end
 -------------------------------------------------------------------------------------------
 -- INPUT HANDLING -------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------
+local maxVisibleItems = 5  -- Number of items to display at once
+local startIndex = 0       -- Index of the first item in the visible range
 local inputCooldown = 0.2
 local timeSinceLastInput = 0
 local escapePressed = false
@@ -286,29 +288,43 @@ local menuPositionXPercentage = 0.98   -- 90% horizontally (right side)
 function drawMenu()
     love.graphics.setColor(1, 1, 1, 1)  -- Reset color to white
 
-    local windowHeight = love.graphics.getHeight()  -- Get the height of the window
-    local windowWidth = love.graphics.getWidth()  -- Get the width of the window
-    local optionYStart = windowHeight * menuPositionYPercentage  -- Calculate the vertical start position based on the percentage
-    local optionX = windowWidth * menuPositionXPercentage  -- Calculate the horizontal position based on the percentage
-    local optionSpacing = font:getHeight() * 1.5  -- Calculate the spacing between options based on font height
+    local windowHeight = love.graphics.getHeight()
+    local windowWidth = love.graphics.getWidth()
+    local optionYStart = windowHeight * menuPositionYPercentage
+    local optionX = windowWidth * menuPositionXPercentage
+    local optionSpacing = font:getHeight() * 1.5
+
+    -- Check if there are any options to display
+    if #menus[selectedMenu] == 0 then
+        return  -- No options to draw
+    end
 
     -- Calculate the starting Y position so that the menu is centered vertically
-    local totalMenuHeight = #menus[selectedMenu] * optionSpacing
+    local totalMenuHeight = math.min(maxVisibleItems, #menus[selectedMenu]) * optionSpacing
     local optionY = optionYStart - (totalMenuHeight / 2)
 
-    -- Draw the menu options
-    for i, option in ipairs(menus[selectedMenu]) do
+    -- Draw only the visible options
+    for i = 0, maxVisibleItems - 1 do
+        local index = (selectedOption + i - 1) % #menus[selectedMenu] + 1  -- Wrap around the menu options
+
+        local option = menus[selectedMenu][index]  -- Get the current option
         love.graphics.setFont(font)  -- Use the regular font
-        love.graphics.setColor(currentColors[i])
-        local textWidth = font:getWidth(option)
-        love.graphics.print(option, optionX - textWidth, optionY + (i - 1) * optionSpacing)
+
+        -- Check if the font is valid and if the option is a string
+        if font and type(option) == "string" then
+            -- Set color for selected option
+            if index == selectedOption then
+                love.graphics.setColor(1, 1, 1, 1)  -- Change color for selected option (e.g., red)
+            else
+                love.graphics.setColor(currentColors[index] or {1, 1, 1, 1})  -- Set color
+            end
+            local textWidth = font:getWidth(option)
+            love.graphics.print(option, optionX - textWidth, optionY + i * optionSpacing)
+        end
     end
 
     love.graphics.setColor(1, 1, 1, 1)  -- Reset color to white
 end
-
-
-
 
 -------------------------------------------------------------------------------------------
 -- AUDIO ----------------------------------------------------------------------------------
