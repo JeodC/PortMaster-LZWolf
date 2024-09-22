@@ -21,7 +21,6 @@ get_controls
 GAMEDIR="/$directory/ports/lzwolf"
 HEIGHT=$DISPLAY_HEIGHT
 WIDTH=$DISPLAY_WIDTH
-DATA="Wolfenstein_3D" # Returned from Love2D launcher
 
 cd $GAMEDIR
 > "$GAMEDIR/log.txt" && exec > >(tee "$GAMEDIR/log.txt") 2>&1
@@ -60,10 +59,27 @@ fi
 sed -i "s/^FullScreenHeight = [0-9]\+/FullScreenHeight = $HEIGHT/" "$CONFIG"
 sed -i "s/^FullScreenWidth = [0-9]\+/FullScreenWidth = $WIDTH/" "$CONFIG"
 
+# Run launcher
+chmod +xr ./love
+$GPTOKEYB "love" &
+./love launcher
+FOLDER=$(<selected_game.txt)
+
+# Cleanup launcher
+$ESUDO kill -9 $(pidof gptokeyb)
+$ESUDO systemctl restart oga_events &
+printf "\033c" > /dev/tty0
+
+if [[ $FOLDER == "Exit" ]]; then
+    exit
+else
+    sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"$FOLDER\";|" "$CONFIG"
+fi
+
 # Build args
 ARGS="--config $CONFIG --savedir ./cfg"
-if [ -n "$DATA" ]; then
-    dos2unix "$DATA/load.txt"
+if [ -n "$FOLDER" ]; then
+    dos2unix "$FOLDER/.load.txt"
     TMP=$IFS
     while IFS== read -r key value; do
         case "$key" in
@@ -74,10 +90,8 @@ if [ -n "$DATA" ]; then
                 ARGS+=" --file $value"
                 ;;
         esac
-    done < "$DATA/load.txt"
+    done < "${FOLDER}/.load.txt"
     IFS=$TMP
-else
-    ARGS+=" --data ${DATA}"
 fi
 
 # Run game

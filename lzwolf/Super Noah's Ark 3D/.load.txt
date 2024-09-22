@@ -1,0 +1,3 @@
+PATH=./Super Noah's Ark 3D
+DATA=N3D
+-- end --

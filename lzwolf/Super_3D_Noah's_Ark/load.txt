@@ -1,3 +1,0 @@
-PATH=./Super_3D_Noah's_Ark
-DATA=N3D
--- end --
