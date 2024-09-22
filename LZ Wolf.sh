@@ -66,6 +66,7 @@ $GPTOKEYB "love" &
 FOLDER=$(<selected_game.txt)
 
 # Cleanup launcher
+rm -rf selected_game.txt
 $ESUDO kill -9 $(pidof gptokeyb)
 $ESUDO systemctl restart oga_events &
 printf "\033c" > /dev/tty0
