@@ -1,0 +1,10 @@
+	<game>
+		<path>./LZ Wolf.sh</path>
+		<name>LZ Wolf</name>
+		<desc>LZWolf is a fork of Blzut3's ECWolf project, combining Wolf4SDL with the philosophies of projects like ZDoom to create a mod-friendly source port for Wolf3D games.</desc>
+		<image>./lzwolf/cover.png</image>
+		<releasedate>19920505</releasedate>
+		<developer>id Software</developer>
+		<publisher>Various</publisher>
+		<genre>Shooter</genre>
+	</game>

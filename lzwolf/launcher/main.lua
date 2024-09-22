@@ -34,6 +34,9 @@ function loadMenuOptions()
     local cwd = love.filesystem.getSourceBaseDirectory()  -- Get current directory path
     print("Current working directory:", cwd)
 
+    -- Clear the main menu to avoid duplication
+    menus.mainMenu = {}
+
     -- Execute shell command to list directories
     local handle = io.popen("ls -d " .. cwd .. "/*/")
     local result = handle:read("*a")
@@ -46,12 +49,24 @@ function loadMenuOptions()
         
         -- Ensure folderName is not nil and is not in the exclusion list
         if folderName and not isExcluded(folderName) then
-            -- Add the folder name to the main menu
-            table.insert(menus.mainMenu, folderName)
-
-            -- Map the folder name to its corresponding file
             local fullPath = cwd .. "/" .. folderName
-            fileMappings[folderName] = fullPath  -- Map to the full path of the game data folder
+            print("Checking items in:", fullPath)  -- Debugging output
+
+            -- Use a shell command to count items in the subdirectory with quotes
+            local itemCountHandle = io.popen("find \"" .. fullPath .. "\" -mindepth 1 | wc -l")
+            local itemCount = tonumber(itemCountHandle:read("*a"))
+            itemCountHandle:close()
+
+            -- Check if the subdirectory contains more than 8 items
+            if itemCount and itemCount > 8 then
+                -- Add the folder name to the main menu
+                table.insert(menus.mainMenu, folderName)
+                -- Map the folder name to its corresponding file
+                fileMappings[folderName] = fullPath  -- Map to the full path of the game data folder
+                print("Added to menu:", folderName)  -- Debugging output
+            else
+                print("Skipped:", folderName, " (only", itemCount, "items)")  -- Debugging output
+            end
         end
     end
 
@@ -59,14 +74,12 @@ function loadMenuOptions()
     table.insert(menus.mainMenu, "Exit")
 end
 
--- Helper function to check if a folder is in the exclusion list
 function isExcluded(folderName)
+    local exclusionSet = {}
     for _, excluded in ipairs(exclusionList) do
-        if folderName == excluded then
-            return true
-        end
+        exclusionSet[excluded] = true
     end
-    return false
+    return exclusionSet[folderName] or false
 end
 
 -------------------------------------------------------------------------------------------
@@ -304,7 +317,7 @@ function drawMenu()
     local optionY = optionYStart - (totalMenuHeight / 2)
 
     -- Draw only the visible options
-    for i = 0, maxVisibleItems - 1 do
+    for i = 0, math.min(maxVisibleItems - 1, #menus[selectedMenu] - 1) do
         local index = (selectedOption + i - 1) % #menus[selectedMenu] + 1  -- Wrap around the menu options
 
         local option = menus[selectedMenu][index]  -- Get the current option
@@ -314,7 +327,7 @@ function drawMenu()
         if font and type(option) == "string" then
             -- Set color for selected option
             if index == selectedOption then
-                love.graphics.setColor(1, 1, 1, 1)  -- Change color for selected option (e.g., red)
+                love.graphics.setColor(1, 1, 1, 1)  -- Change color for selected option (e.g., white)
             else
                 love.graphics.setColor(currentColors[index] or {1, 1, 1, 1})  -- Set color
             end
