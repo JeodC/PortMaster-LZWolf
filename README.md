@@ -27,3 +27,9 @@ DATA=WL6
 PK3_1=breathing_fix.pk3
 -- end --
 ```
+
+## Thanks
+id Software -- Original game  
+Linuxwolf -- LZWolf  
+Slayer366 -- Port assistance  
+PortMaster Discord -- Testers
