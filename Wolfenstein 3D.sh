@@ -18,7 +18,7 @@ source $controlfolder/device_info.txt
 get_controls
 
 # Variables
-GAMEDIR="/$directory/ports/lzwolf"
+GAMEDIR="/$directory/ports/wolf3d"
 HEIGHT=$DISPLAY_HEIGHT
 WIDTH=$DISPLAY_WIDTH
 
@@ -27,7 +27,9 @@ cd $GAMEDIR
 
 # Create config dir
 rm -rf "$XDG_DATA_HOME/lzwolf"
+rm -rf "$XDG_DATA_HOME/ecwolf"
 ln -s "$GAMEDIR/cfg" "$XDG_DATA_HOME/lzwolf"
+ln -s "$GAMEDIR/cfg" "$XDG_DATA_HOME/ecwolf"
 
 # Permissions
 $ESUDO chmod 666 /dev/tty0
@@ -47,18 +49,6 @@ else
     CONFIG="./cfg/lzwolf.cfg" 
 fi
 
-# Modify the config file
-if [ $WIDTH -eq $HEIGHT ]; then # RGB30 or 1:1
-    HEIGHT=540
-fi
-if [ $HEIGHT -gt 1080 ]; then # RG552
-    HEIGHT=768
-    WIDTH=1366
-fi
-
-sed -i "s/^FullScreenHeight = [0-9]\+/FullScreenHeight = $HEIGHT/" "$CONFIG"
-sed -i "s/^FullScreenWidth = [0-9]\+/FullScreenWidth = $WIDTH/" "$CONFIG"
-
 # Run launcher
 chmod +xr ./love
 $GPTOKEYB "love" &
@@ -71,16 +61,37 @@ $ESUDO kill -9 $(pidof gptokeyb)
 $ESUDO systemctl restart oga_events &
 printf "\033c" > /dev/tty0
 
+# Modify the config file
+if [ $WIDTH -eq $HEIGHT ]; then # RGB30 or 1:1
+    HEIGHT=540
+fi
+if [ $HEIGHT -gt 1080 ]; then # RG552
+    HEIGHT=768
+    WIDTH=1366
+fi
+
+sed -i "s/^FullScreenHeight = [0-9]\+/FullScreenHeight = $HEIGHT/" "$CONFIG"
+sed -i "s/^FullScreenWidth = [0-9]\+/FullScreenWidth = $WIDTH/" "$CONFIG"
+
 if [[ $FOLDER == "Exit" ]]; then
     exit
 else
-    sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"./Wolfenstein 3D;./Spear of Destiny;./Super Noah's Ark 3D;$FOLDER\";|" "$CONFIG"
+    sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"./data;$FOLDER\";|" "$CONFIG"
+fi
+
+# Pick the engine to use
+if [[ ${FOLDER##*/} == "Return to Danger" || ${FOLDER##*/} == "Ultimate Challenge" ]]; then
+    echo "[LOG]: ${FOLDER##*/} chosen, so using ecwolf"
+    ENGINE=ecwolf
+else
+    echo "[LOG]: ${FOLDER##*/} chosen, so using lzwolf"
+    ENGINE=lzwolf
 fi
 
 # Build args
 ARGS="--config $CONFIG --savedir ./cfg"
 if [ -n "$FOLDER" ]; then
-    dos2unix "$FOLDER/.load.txt"
+    dos2unix "$FOLDER/.load.txt" >/dev/null 2>&1
     TMP=$IFS
     while IFS== read -r key value; do
         case "$key" in
@@ -96,9 +107,9 @@ if [ -n "$FOLDER" ]; then
 fi
 
 # Run game
-echo "Running lzwolf with args: ${ARGS}"
+echo "[LOG]: Running ${ENGINE} with args: ${ARGS}"
 $GPTOKEYB "lzwolf" &
-./lzwolf $ARGS
+./$ENGINE $ARGS
 
 $ESUDO kill -9 $(pidof gptokeyb)
 $ESUDO systemctl restart oga_events &

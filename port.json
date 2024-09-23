@@ -1,18 +1,18 @@
 {
   "version": 3,
-  "name": "lzwolf",
+  "name": "Wolfenstein 3D",
   "items": [
-    "LZ Wolf",
-    "lzwolf"
+    "Wolfenstein 3D.sh",
+    "wolf3d"
   ],
   "items_opt": [],
   "attr": {
-    "title": "LZ Wolf",
+    "title": "Wolfenstein 3D",
     "porter": [
       "Slayer366",
       "Jeod"
     ],
-    "desc": "LZ Wolf comes to PortMaster! A Love2D launcher makes selecting games and mods easy. See the readme for instructions and details.\n\nIncludes shareware demo files.",
+    "desc": "LZ Wolf and EZ Wolf come to PortMaster! A Love2D launcher makes selecting games and mods easy. See the readme for instructions and details.\n\nIncludes shareware demo files.",
     "desc_md": null,
     "inst": "Comes with shareware files for Wolfenstein 3D and Spear of Destiny. Add your full game files to their respective folders to play.",
     "inst_md": null,

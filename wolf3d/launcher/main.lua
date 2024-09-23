@@ -22,6 +22,7 @@ local fileMappings = {}
 -- List of subfolders to exclude
 local exclusionList = {
     "cfg",
+    "data",
     "launcher",
     "libs",
 }
@@ -29,10 +30,55 @@ local exclusionList = {
 -------------------------------------------------------------------------------------------
 -- DYNAMIC MENU LOADING -------------------------------------------------------------------
 -------------------------------------------------------------------------------------------
+
+-- Function to read the .load.txt file and return the DATA extension to check
+function readLoadTxt(folderPath)
+    local loadTxtPath = folderPath .. "/.load.txt"
+    local file = io.open(loadTxtPath, "r")
+    
+    if not file then
+        print("[LOG]: .load.txt not found in", folderPath)
+        return nil
+    end
+    
+    local dataExtension = nil
+    
+    for line in file:lines() do
+        -- Parse the DATA key
+        local key, value = line:match("^(%w+)%s*=%s*(.+)$")
+        if key == "DATA" then
+            dataExtension = value  -- Get the data type (extension)
+        end
+    end
+    
+    file:close()
+    
+    if dataExtension then
+        -- Return the data extension (e.g., "SDM")
+        return "." .. dataExtension
+    else
+        print("[LOG]: DATA key not found in .load.txt for", folderPath)
+        return nil
+    end
+end
+
+-- Function to check if any files with the given extension exist in ./data (cwd/data)
+function hasDataFiles(cwd, extension)
+    -- Assuming data folder is always "./data" within cwd
+    local dataFolder = cwd .. "/data"
+    
+    -- Use the `find` command to search for files with the specified extension in ./data
+    local handle = io.popen("find \"" .. dataFolder .. "\" -type f -name '*" .. extension .. "' 2>/dev/null")
+    local result = handle:read("*a")
+    handle:close()
+    
+    -- If the result is empty, no files with the specified extension are found
+    return result ~= ""
+end
+
 -- Function to load menu options from subfolders, excluding folders in the exclusion list
 function loadMenuOptions()
     local cwd = love.filesystem.getSourceBaseDirectory()  -- Get current directory path
-    print("Current working directory:", cwd)
 
     -- Clear the main menu to avoid duplication
     menus.mainMenu = {}
@@ -50,21 +96,23 @@ function loadMenuOptions()
         -- Ensure folderName is not nil and is not in the exclusion list
         if folderName and not isExcluded(folderName) then
             local fullPath = cwd .. "/" .. folderName
-            print("Checking items in:", fullPath)
 
-            -- Use a shell command to count items in the subdirectory with quotes
-            local itemCountHandle = io.popen("find \"" .. fullPath .. "\" -mindepth 1 | wc -l")
-            local itemCount = tonumber(itemCountHandle:read("*a"))
-            itemCountHandle:close()
-
-            -- Check if the subdirectory contains anything
-            if itemCount and itemCount > 0 then
-                -- Add the folder name to the main menu
-                table.insert(menus.mainMenu, folderName)
-                -- Map the folder name to its corresponding file
-                fileMappings[folderName] = fullPath
+            -- Read the .load.txt file for the DATA extension
+            local dataExtension = readLoadTxt(fullPath)
+            
+            -- Proceed if the data extension is available
+            if dataExtension then
+                -- Check if there are any files with the specified extension in ./data (cwd/data)
+                if hasDataFiles(cwd, dataExtension) then
+                    -- Add the folder name to the main menu
+                    table.insert(menus.mainMenu, folderName)
+                    -- Map the folder name to its corresponding file
+                    fileMappings[folderName] = fullPath
+                else
+                    print("[LOG]: No " .. dataExtension .. " files found in ./data for", folderName)
+                end
             else
-                print("Skipped empty folder:", folderName)
+                print("[LOG]: Skipping folder due to missing .load.txt or invalid data")
             end
         end
     end
@@ -80,6 +128,7 @@ function isExcluded(folderName)
     end
     return exclusionSet[folderName] or false
 end
+
 
 -------------------------------------------------------------------------------------------
 -- FONT SETTINGS --------------------------------------------------------------------------
@@ -477,7 +526,6 @@ function handleSelection()
         if fileToWrite then
             file:write(fileToWrite)  -- Write the corresponding file name or default to option text
             file:close()  -- Close the file
-            print("Selected game file '" .. fileToWrite .. "' written to " .. filename)
             
             -- Fade out the background music
             fadeOutBackgroundMusic()
@@ -494,11 +542,9 @@ function handleSelection()
                 end
             end
         else
-            print("Error: No file name found for selected game '" .. selectedGame .. "'.")
             file:close()  -- Close the file if not already closed
         end
     else
-        print("Error: Unable to open file " .. filename .. " for writing.")
     end
 end
 

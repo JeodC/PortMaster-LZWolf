@@ -1,4 +1,4 @@
-PATH=./Spear of Destiny
-DATA=SOD
+PATH=./data
+DATA=SDM
 PK3_1=breathing_fix.pk3
 -- end --
