@@ -28,6 +28,18 @@ PK3_1=breathing_fix.pk3
 -- end --
 ```
 
+This example `Operation Wasserstein II/.load.txt` launches the mod Operation Wasserstein II:
+
+```
+PATH=./Wolfenstein 3D
+DATA=WL6
+PK3_1=breathing_fix.pk3
+PK3_2=Wasserstein2.pk3
+-- end --
+```
+
+Note the `PATH` still points to the `Wolfenstein 3D` folder, since that's where the `WL6` data files are. However, since we gave the mod its own subfolder and `.load.txt` file, it appears in the launcher as its own option.
+
 ## Building
 See [PM-LZWolf](https://github.com/JeodC/pm-lzwolf) GitHub fork for compile instructions and change information.
 
