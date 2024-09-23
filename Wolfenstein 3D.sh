@@ -79,8 +79,26 @@ else
     sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"./data;$FOLDER\";|" "$CONFIG"
 fi
 
+# List of games that should use EC Wolf
+ECGAMES="Return to Danger:Ultimate Challenge:Super Noah's Ark 3D"
+
 # Pick the engine to use
-if [[ ${FOLDER##*/} == "Return to Danger" || ${FOLDER##*/} == "Ultimate Challenge" ]]; then
+contains() {
+    local value="$1"  # Use the first argument as the value to check
+    local item
+    local tmp=$IFS
+    IFS=":" # Use : as the delimiter
+    for item in $FOLDER; do
+        if [ "$item" = "$value" ]; then
+            IFS=$tmp
+            return 0
+        fi
+    done
+    IFS=$tmp
+    return 1
+}
+
+if contains "$FOLDER"; then
     echo "[LOG]: ${FOLDER##*/} chosen, so using ecwolf"
     ENGINE=ecwolf
 else

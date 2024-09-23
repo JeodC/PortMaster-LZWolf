@@ -13,7 +13,14 @@ This port comes with the shareware and demo for Wolfenstein 3D and Spear of Dest
 To use them, place your game data (`.WL6`, `.SOD`, `.SD2`, `.SD3`, `.N3D`, etc) in `ports/lzwolf/data`.
 
 ## Play
-To use addon mods, place `.pk3` files in `ports/lzwolf` and list the `.pk3` files to load in `.load.txt` for the relevant game.
+To use addon mods, place `.pk3` files in `ports/lzwolf` and list the `.pk3` files to load in `.load.txt` for the relevant game. If your mod requires ecwolf, add the subfolder to list of names in the `Wolfenstein 3D.sh` file where you see the following:
+
+```bash
+# List of games that should use EC Wolf
+ECGAMES="Return to Danger:Ultimate Challenge:Super Noah's Ark 3D"
+```
+
+These names are delimited by a colon (`:`), so construct like `ECGAMES="GAME1:GAME2:GAME3"` and so on.
 
 ## Mod
 The launcher lists folders as games and looks for `.load.txt` files inside them. It uses their information to construct arguments passed to lzwolf or ecwolf, and will not display menu options for any games that are missing data. To create a `.load.txt` file, open a text editor and add the following:
