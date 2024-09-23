@@ -110,6 +110,7 @@ function loadMenuOptions()
                     fileMappings[folderName] = fullPath
                 else
                     print("[LOG]: No " .. dataExtension .. " files found in ./data for", folderName)
+                    print("[LOG]: Linux is a case-sensitive filesystem. If data files are there, check for case sensitivity.")
                 end
             else
                 print("[LOG]: Skipping folder due to missing .load.txt or invalid data")
