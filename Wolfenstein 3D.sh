@@ -80,7 +80,7 @@ else
 fi
 
 # List of games that should use EC Wolf
-ECGAMES="Return to Danger:Ultimate Challenge:Super Noah's Ark 3D"
+ECGAMES="2.1 Mission Pack - Return to Danger:2.2 Mission Pack - Ultimate Challenge:3. Super Noah's Ark 3D"
 
 # Pick the engine to use
 contains() {
