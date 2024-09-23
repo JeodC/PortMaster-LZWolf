@@ -74,7 +74,7 @@ printf "\033c" > /dev/tty0
 if [[ $FOLDER == "Exit" ]]; then
     exit
 else
-    sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"$FOLDER\";|" "$CONFIG"
+    sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"./Wolfenstein 3D;./Spear of Destiny;./Super Noah's Ark 3D;$FOLDER\";|" "$CONFIG"
 fi
 
 # Build args

@@ -50,22 +50,21 @@ function loadMenuOptions()
         -- Ensure folderName is not nil and is not in the exclusion list
         if folderName and not isExcluded(folderName) then
             local fullPath = cwd .. "/" .. folderName
-            print("Checking items in:", fullPath)  -- Debugging output
+            print("Checking items in:", fullPath)
 
             -- Use a shell command to count items in the subdirectory with quotes
             local itemCountHandle = io.popen("find \"" .. fullPath .. "\" -mindepth 1 | wc -l")
             local itemCount = tonumber(itemCountHandle:read("*a"))
             itemCountHandle:close()
 
-            -- Check if the subdirectory contains more than 8 items
-            if itemCount and itemCount > 8 then
+            -- Check if the subdirectory contains anything
+            if itemCount and itemCount > 0 then
                 -- Add the folder name to the main menu
                 table.insert(menus.mainMenu, folderName)
                 -- Map the folder name to its corresponding file
-                fileMappings[folderName] = fullPath  -- Map to the full path of the game data folder
-                print("Added to menu:", folderName)  -- Debugging output
+                fileMappings[folderName] = fullPath
             else
-                print("Skipped:", folderName, " (only", itemCount, "items)")  -- Debugging output
+                print("Skipped empty folder:", folderName)
             end
         end
     end
