@@ -126,7 +126,7 @@ fi
 
 # Run game
 echo "[LOG]: Running ${ENGINE} with args: ${ARGS}"
-$GPTOKEYB "lzwolf" &
+$GPTOKEYB "$ENGINE" & 
 ./$ENGINE $ARGS
 
 $ESUDO kill -9 $(pidof gptokeyb)
