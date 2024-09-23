@@ -345,6 +345,19 @@ end
 
 -- Load background music
 function loadMusic()
+    -- Stop the background music if it's playing
+    if backgroundMusic and backgroundMusic:isPlaying() then
+        love.audio.stop(backgroundMusic)
+    end
+
+    -- Load a specific music file
+    backgroundMusic = love.audio.newSource("assets/audio/music/menu.ogg", "stream")
+
+    -- Set the music to loop and play it if it is not nil
+    if backgroundMusic then
+        backgroundMusic:setLooping(true)
+        love.audio.play(backgroundMusic)
+    end
 end
 
 function fadeOutBackgroundMusic()
