@@ -16,7 +16,7 @@ To use them, place your game data (`.WL6`, `.SOD`, `.SD2`, `.SD3`, `.N3D`, etc) 
 To use addon mods, place `.pk3` files in `ports/lzwolf` and list the `.pk3` files to load in `.load.txt` for the relevant game.
 
 ## Mod
-The launcher lists folders as games and looks for `.load.txt` files inside them. It uses their information to construct arguments passed to lzwolf or ecwolf. To create a `.load.txt` file, open a text editor and add the following:
+The launcher lists folders as games and looks for `.load.txt` files inside them. It uses their information to construct arguments passed to lzwolf or ecwolf, and will not display menu options for any games that are missing data. To create a `.load.txt` file, open a text editor and add the following:
 
 - `PATH` - This is always `./data`
 - `DATA` - File extension of the data files
