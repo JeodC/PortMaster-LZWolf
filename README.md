@@ -10,17 +10,10 @@ This port comes with the shareware and demo for Wolfenstein 3D and Spear of Dest
 - [Spear of Destiny Mission Packs]()
 - [Super Noah's Ark 3D](https://wisdomtree.itch.io/s3dna)
 
-To use them, place your game data (`.WL6`, `.SOD`, `.SD2`, `.SD3`, `.N3D`, etc) in `ports/lzwolf/data`.
+To use them, place your game data (`.WL6`, `.SOD`, `.SD2`, `.SD3`, `.N3D`, etc) in `ports/wolf3d/data`.
 
 ## Play
-To use addon mods, place `.pk3` files in `ports/lzwolf` and list the `.pk3` files to load in `.load.txt` for the relevant game. If your mod requires ecwolf, add the subfolder to list of names in the `Wolfenstein 3D.sh` file where you see the following:
-
-```bash
-# List of games that should use EC Wolf
-ECGAMES="Return to Danger:Ultimate Challenge:Super Noah's Ark 3D"
-```
-
-These names are delimited by a colon (`:`), so construct like `ECGAMES="GAME1:GAME2:GAME3"` and so on.
+To use addon mods, place `.pk3` files in `ports/wolf3d` and list the `.pk3` files to load in `.load.txt` for the relevant game. use the Left Shoulder and Right Shoulder buttons in the launcher to sekect which engine to use.
 
 ## Config
 The launchscript is set up to use one of two `.cfg` files based on the presence of joysticks. You can freely modify button assignments ingame by going to `Options -> Control Setup -> Customize controls` and selecting the `JOY` column.
