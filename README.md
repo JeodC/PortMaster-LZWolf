@@ -1,4 +1,4 @@
-# LZWolf -- A PortMaster implementation of LZWolf and ECWolf to play Wolfenstein 3D and friends
+# Wolfenstein 3D -- A PortMaster implementation of LZWolf and ECWolf to play Wolfenstein 3D and friends
 <div align="center">
   <img src="https://github.com/user-attachments/assets/7c94dfb7-b86a-421a-bd26-142900204663" alt="lzwolf-menu" width="480" height="320"/>
 </div>
