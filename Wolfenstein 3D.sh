@@ -53,7 +53,20 @@ fi
 chmod +xr ./love
 $GPTOKEYB "love" &
 ./love launcher
-FOLDER=$(<selected_game.txt)
+
+# Read both lines from selected_game.txt
+# Initialize variables
+FOLDER=""
+ENGINE=""
+
+# Read the file line by line
+while IFS= read -r line; do
+    if [ -z "$FOLDER" ]; then
+        FOLDER="$line"  # First line is FOLDER
+    else
+        ENGINE="$line"  # Second line is ENGINE
+    fi
+done < selected_game.txt
 
 # Cleanup launcher
 rm -rf selected_game.txt
@@ -81,14 +94,30 @@ fi
 
 # List of games that should use EC Wolf
 ECGAMES="2.1 Mission Pack - Return to Danger:2.2 Mission Pack - Ultimate Challenge:3. Super Noah's Ark 3D"
+# List of games that should use LZ Wolf
+LZGAMES="1. Wolfenstein 3D HD:2. Spear of Destiny HD"
 
 # Pick the engine to use
-contains() {
+eccontains() {
     local value="$1"  # Use the first argument as the value to check
     local item
     local tmp=$IFS
     IFS=":" # Use : as the delimiter
-    for item in $ECGAMES; do  # Loop through ECGAMES instead of FOLDER
+    for item in $ECGAMES; do
+        if [ "$item" = "$value" ]; then
+            IFS=$tmp
+            return 0
+        fi
+    done
+    IFS=$tmp
+    return 1
+}
+lzcontains() {
+    local value="$1"  # Use the first argument as the value to check
+    local item
+    local tmp=$IFS
+    IFS=":" # Use : as the delimiter
+    for item in $LZGAMES; do
         if [ "$item" = "$value" ]; then
             IFS=$tmp
             return 0
@@ -98,11 +127,11 @@ contains() {
     return 1
 }
 
-if contains "$FOLDER"; then
-    echo "[LOG]: ${FOLDER##*/} chosen, so using ecwolf"
+if eccontains "$FOLDER"; then
+    echo "[LOG]: ${FOLDER##*/} chosen, which requires EC Wolf"
     ENGINE=ecwolf
-else
-    echo "[LOG]: ${FOLDER##*/} chosen, so using lzwolf"
+elif lzcontains "$FOLDER"; then
+    echo "[LOG]: ${FOLDER##*/} chosen, which requires LZ Wolf"
     ENGINE=lzwolf
 fi
 

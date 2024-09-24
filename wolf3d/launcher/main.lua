@@ -236,10 +236,9 @@ function love.draw()
     if splash and not splash.done then
         splash:draw()
     else
-        -- Draw the background
         drawBackground()
-		
 		drawMenu()
+        drawRadioButtons()
 
         -- Determine which fade effect to apply
         if fadeParams.fadeType == "in" then
@@ -260,6 +259,14 @@ local timeSinceLastInput = 0
 local escapePressed = false
 local gamepadAPressed = false
 
+-- Define variables for radio buttons
+local selectedRadioOption = 1  -- 1 for "EC Wolf", 2 for "LZ Wolf"
+local radioButtonSize = 12     -- Size of the radio button
+local radioButtonSpacing = 80  -- Spacing between the two radio buttons
+local radioButtonLabelOffset = 10  -- Space between radio button and label text
+local radioButtonYPercentage = 0.05 -- Position for the radio buttons (5% from the top)
+local radioButtonXPercentage = 0.85 -- Align to the right side, similar to the menu
+
 -- Main input handler (default menu)
 function handleInput()
     local gamepad = love.joystick.getJoysticks()[1]
@@ -274,6 +281,14 @@ function handleDefaultMenuInput(gamepad)
     elseif love.keyboard.isDown("down") or (gamepad and gamepad:isGamepadDown("dpdown")) then
         selectNextOption()
         playUISound("toggle")  -- Play side sound for downward movement
+    elseif (gamepad and gamepad:isGamepadDown("leftshoulder")) then
+        selectedRadioOption = 1  -- "EC Wolf" selected
+        selectRadioOption()
+        playUISound("toggle")
+    elseif (gamepad and gamepad:isGamepadDown("rightshoulder")) then
+        selectedRadioOption = 2  -- "LZ Wolf" selected
+        selectRadioOption()
+        playUISound("toggle")
     elseif love.keyboard.isDown("return") or (gamepad and gamepad:isGamepadDown("a")) then  -- Switched to 'a' for selection action
         handleSelection()
         playUISound("enter")  -- Play enter sound for selection
@@ -296,6 +311,11 @@ function selectNextOption()
     if selectedOption > #menus[selectedMenu] then
         selectedOption = 1
     end
+    timeSinceLastInput = 0
+end
+
+-- Select radio option
+function selectRadioOption()
     timeSinceLastInput = 0
 end
 
@@ -384,6 +404,57 @@ function drawMenu()
             love.graphics.print(option, optionX - textWidth, optionY + i * optionSpacing)
         end
     end
+
+    love.graphics.setColor(1, 1, 1, 1)  -- Reset color to white
+end
+
+-- Define font size scaling factor
+local fontSizeScaleFactor = 1.0  -- Scale factor for font size relative to button size
+
+-- Draw the radio buttons at the top-right of the screen
+function drawRadioButtons()
+    love.graphics.setColor(1, 1, 1, 1)  -- Set color to white
+    local windowHeight = love.graphics.getHeight()
+    local windowWidth = love.graphics.getWidth()
+
+    -- Calculate the position for the radio buttons
+    local radioButtonY = windowHeight * radioButtonYPercentage
+    local radioButtonX = windowWidth * radioButtonXPercentage
+
+    -- Set the font size based on button size
+    local fontSize = radioButtonSize * fontSizeScaleFactor
+    love.graphics.setFont(love.graphics.newFont(fontSize))  -- Create a new font with the calculated size
+
+    -- Draw first radio button ("EC Wolf")
+    local ecWolfX = radioButtonX - (2 * radioButtonSize + radioButtonSpacing)  -- Left button
+    love.graphics.circle("line", ecWolfX, radioButtonY, radioButtonSize / 2)  -- Outer circle
+
+    -- Fill if selected
+    if selectedRadioOption == 1 then
+        love.graphics.circle("fill", ecWolfX, radioButtonY, radioButtonSize / 4)  -- Inner filled circle
+    end
+    
+    -- Calculate the vertical position for the label to align with the button
+    local ecWolfLabelY = radioButtonY - fontSize / 2  -- Align vertically with the center of the button
+    love.graphics.print("EC Wolf", ecWolfX + radioButtonLabelOffset, ecWolfLabelY)
+
+    -- Draw second radio button ("LZ Wolf")
+    local lzWolfX = ecWolfX + radioButtonSize + radioButtonSpacing  -- Right button
+    love.graphics.circle("line", lzWolfX, radioButtonY, radioButtonSize / 2)  -- Outer circle
+
+    -- Fill if selected
+    if selectedRadioOption == 2 then
+        love.graphics.circle("fill", lzWolfX, radioButtonY, radioButtonSize / 4)  -- Inner filled circle
+    end
+    
+    -- Calculate the vertical position for the label to align with the button
+    local lzWolfLabelY = radioButtonY - fontSize / 2  -- Align vertically with the center of the button
+    love.graphics.print("LZ Wolf", lzWolfX + radioButtonLabelOffset, lzWolfLabelY)
+
+    -- Draw the instruction text closer to the radio buttons
+    local instructionY = radioButtonY + 18 -- Adjust positioning closer
+    local instructionX = radioButtonX - (4 * radioButtonSize + radioButtonSpacing + radioButtonLabelOffset)  -- Move left
+    love.graphics.print("Use L/R to select an engine to use", instructionX, instructionY)
 
     love.graphics.setColor(1, 1, 1, 1)  -- Reset color to white
 end
@@ -525,7 +596,15 @@ function handleSelection()
     if file then
         local fileToWrite = fileMappings[selectedGame] or selectedGame
         if fileToWrite then
-            file:write(fileToWrite)  -- Write the corresponding file name or default to option text
+            file:write(fileToWrite .. "\n")  -- Write the corresponding file name or default to option text
+            
+            -- Write the selected radio option
+            if selectedRadioOption == 1 then
+                file:write("ecwolf\n")  -- Write label for EC Wolf
+            elseif selectedRadioOption == 2 then
+                file:write("lzwolf\n")  -- Write label for LZ Wolf
+            end
+            
             file:close()  -- Close the file
             
             -- Fade out the background music
@@ -546,10 +625,9 @@ function handleSelection()
             file:close()  -- Close the file if not already closed
         end
     else
+        print("Error opening file for writing")  -- Print error if file couldn't be opened
     end
 end
-
-
 
 -------------------------------------------------------------------------------------------
 -- MINOR FUNCTIONS --------------------------------------------------------------------------
