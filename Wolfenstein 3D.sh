@@ -88,7 +88,7 @@ contains() {
     local item
     local tmp=$IFS
     IFS=":" # Use : as the delimiter
-    for item in $FOLDER; do
+    for item in $ECGAMES; do  # Loop through ECGAMES instead of FOLDER
         if [ "$item" = "$value" ]; then
             IFS=$tmp
             return 0

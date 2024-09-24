@@ -22,6 +22,9 @@ ECGAMES="Return to Danger:Ultimate Challenge:Super Noah's Ark 3D"
 
 These names are delimited by a colon (`:`), so construct like `ECGAMES="GAME1:GAME2:GAME3"` and so on.
 
+## Config
+The launchscript is set up to use one of two `.cfg` files based on the presence of joysticks. You can freely modify button assignments ingame by going to `Options -> Control Setup -> Customize controls` and selecting the `JOY` column.
+
 ## Mod
 The launcher lists folders as games and looks for `.load.txt` files inside them. It uses their information to construct arguments passed to lzwolf or ecwolf, and will not display menu options for any games that are missing data. To create a `.load.txt` file, open a text editor and add the following:
 
