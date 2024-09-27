@@ -40,7 +40,6 @@ $ESUDO chmod 777 -R $GAMEDIR/*
 # Exports
 export LD_LIBRARY_PATH="$GAMEDIR/libs:$LD_LIBRARY_PATH"
 export SDL_GAMECONTROLLERCONFIG="$sdl_controllerconfig"
-export SDL_GAMECONTROLLERCONFIG_FILE="$sdl_controllerconfig"
 
 # Select a config file
 if [ "${ANALOG_STICKS}" -lt 2 ]; then
@@ -89,7 +88,7 @@ sed -i "s/^FullScreenWidth = [0-9]\+/FullScreenWidth = $WIDTH/" "$CONFIG"
 if [[ $FOLDER == "Exit" ]]; then
     exit
 else
-    sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"./data;$FOLDER\";|" "$CONFIG"
+    sed -i "s|^BaseDataPaths = .*|BaseDataPaths = \"$FOLDER;./data\";|" "$CONFIG"
 fi
 
 # List of games that should use EC Wolf
